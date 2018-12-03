@@ -47,7 +47,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     Marker marker,currentLocMarker;
     MarkerOptions markerOptions,currentLocationMarkerOption;
     LocationPresenter locationPresenter ;
-    Timer timer = new Timer();
+    public static Timer timer ;
     int count = 0;
     boolean isStarted = true;
     private Location mLastLocation;
@@ -103,6 +103,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     }
     public void updateMap(){
         locationPresenter.getLatestLocation();
+        timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -110,7 +111,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                     locationPresenter.getLatestLocation();
                 }
             }
-        },0,5000);
+        },0,15000);
     }
     private void checkLocationPermission() {
 
@@ -231,7 +232,11 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
             mGoogleApiClient.connect();
         }
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
