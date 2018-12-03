@@ -9,14 +9,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.test.mock.MockPackageManager;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.driveu.driveutest.Model.LocationModel;
 import com.driveu.driveutest.R;
@@ -65,6 +63,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         ButterKnife.bind(this);
         initMap();
         initPresenter();
+        hideOnscreenButtons();
         checkLocationPermission();
 
         if(DriveUPref.isServiceStarted()){
@@ -111,7 +110,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                     locationPresenter.getLatestLocation();
                 }
             }
-        },0,25000);
+        },0,5000);
     }
     private void checkLocationPermission() {
 
@@ -160,13 +159,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         marker = mMap.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.location)).position(latLng));
-        // Add a marker in Sydney and move the camera
-        /*LatLng sydney = new LatLng(-34, 151);
-        markerOptions = new MarkerOptions();
-        markerOptions.position(sydney);
-        // mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        marker = mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
     }
 
     @Override
@@ -262,8 +254,18 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         currentLocationMarkerOption.position(latLng);
         // mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         currentLocMarker = mMap.addMarker(currentLocationMarkerOption);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,5));// Zoom in, animating the camera.
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));// Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomIn());// Zoom out to zoom level 10, animating with a duration of 2 seconds.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+    }
+    public void hideOnscreenButtons(){
+        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        this.getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 }
